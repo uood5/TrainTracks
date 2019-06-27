@@ -48,35 +48,47 @@ if len(rectangles) == 1:
 
 rawArea = rectangles[1].reshape(4,2)
 
+# Work out which corners are what 
 rawArea = rawArea[rawArea[:, 1].argsort()]
-print(rawArea)
-
 NW = min(rawArea[:2],key=lambda x: x[0])
 SW = min(rawArea[-2:],key=lambda x: x[0])
 NE = max(rawArea[:2],key=lambda x: x[0])
 SE = max(rawArea[-2:],key=lambda x: x[0])
 
-#puzzleFound = cv2.polylines(gray,np.array([NW,SW,NE,SE],np.int32).reshape((-1,1,2)),True,255,3)
-#cv2.imshow("found",puzzleFound)
+# puzzleFound = cv2.polylines(gray,np.array([NW,SW,NE,SE],np.int32).reshape((-1,1,2)),True,255,3)
+# cv2.imshow("found",puzzleFound)
 
-NW = [NW[0] + ((NW[0]-SW[0])/8),
-	  NW[1] - ((SW[1]-NW[1])/8)]
-NE = [NE[0] + ((NE[0]-NW[0])/8),
-	  NE[1] - ((SE[1]-NE[1])/8)]
-SE = [SE[0] + ((SE[0]-SW[0])/8),
-	  SE[1] + ((SE[1]-SW[1])/8)]
+print(NW[0])
+print(((SW[0]-NW[0])/8))
+# Move corners to find numbers too
+NW1 = [NW[0] + ((SW[0]-NW[0])/8),
+	   NW[1] - ((SW[1]-NW[1])/8)]
+NE1 = [NE[0] + ((SE[0]-NE[0])/8),
+	   NE[1] - ((SE[1]-NE[1])/8)]
+
+NE2 = [NE[0] + ((NE[0]-NW[0])/8),
+	   NE[1] + ((NE[1]-NW[1])/8)]
+SE1 = [SE[0] + ((SE[0]-SW[0])/8),
+	   SE[1] + ((SE[1]-SW[1])/8)]
 
 puzzleArea = np.array([NW, SW, NE, SE])
-print (puzzleArea)
+topArea = np.array([NW1,NE1,NE,NW])
+sideArea = np.array([NE,NE2,SE,SE1])
+puzzleFound = cv2.polylines(gray,np.array([NE,NE2,SE,SE1],np.int32).reshape((-1,1,2)),True,255,3)
 
 # print (np.minimum(rawArea[2],rawArea[3]))
 
 # extract the puzzle, apply a perspective transform to it
 warped = four_point_transform(gray, puzzleArea)
+topNum = four_point_transform(gray, topArea)
+sideNum = four_point_transform(gray, sideArea)
 
 # Get height and width
 height,width = warped.shape
 cellheight, cellwidth = height/8, width/8
 
+cv2.imshow("gray",gray)
 cv2.imshow("warped",warped)
+cv2.imshow("topArea",topNum)
+cv2.imshow("sideNum",sideNum)
 cv2.waitKey(0) 
