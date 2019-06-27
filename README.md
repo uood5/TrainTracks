@@ -7,3 +7,7 @@ TODO:
 * Get row/column numbers
 * Get positions of given train tracks
 * Solve
+
+
+# Dependencies
+imutils, cv2, numpy, PyTesseract
