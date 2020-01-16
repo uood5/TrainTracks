@@ -1,5 +1,5 @@
-# TrainTracks
-Will scan a given image for a Times train tracks puzzle and attempt to solve it
+# TrainTracks - UNFINISHED
+Will scan a given image for a Times train tracks puzzle and attempt to solve it. 
 
 TODO:
 
